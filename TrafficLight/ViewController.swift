@@ -14,10 +14,17 @@ class ViewController: UIViewController {
     let greenView = UIView()
     let switchTrafficLightButton = UIButton()
     
+    //
+    var currentViewIndex = -1
+    var views: [UIView] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // StackView
+        // Initializing Views
+        views = [redView, yellowView, greenView]
+        
+        // Stack View
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
@@ -25,18 +32,13 @@ class ViewController: UIViewController {
         
         // Red View
         configureCircularView(redView, color: .red)
-        redView.alpha = 0.3
         // Yellow View
         configureCircularView(yellowView, color: .yellow)
-        yellowView.alpha = 0.3
         // Green View
         configureCircularView(greenView, color: .green)
-        greenView.alpha = 0.3
         
         // Add views to StackView
-        stackView.addArrangedSubview(redView)
-        stackView.addArrangedSubview(yellowView)
-        stackView.addArrangedSubview(greenView)
+        views.forEach { stackView.addArrangedSubview($0) }
         
         // Add Stack and Auto Layout
         view.addSubview(stackView)
@@ -46,6 +48,7 @@ class ViewController: UIViewController {
         switchTrafficLightButton.setTitle("Start", for: .normal)
         switchTrafficLightButton.backgroundColor = .blue
         switchTrafficLightButton.translatesAutoresizingMaskIntoConstraints = false
+        switchTrafficLightButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         view.addSubview(switchTrafficLightButton)
         
         // Constraint Stack
@@ -63,6 +66,22 @@ class ViewController: UIViewController {
         ])
     }
     
+    @objc func buttonTapped() {
+        // Увеличиваем индекс текущего представления и выполняем модуль для обеспечения цикличности
+        currentViewIndex = (currentViewIndex + 1) % views.count
+        
+        // Устанавливаем прозрачность для текущего представления
+        let switchOffColorView: CGFloat = 0.3
+        let switchOnColorView: CGFloat = 1.0
+        views[currentViewIndex].alpha = switchOnColorView
+        
+        // Сбрасываем прозрачность для предыдущего представления
+        let previousViewIndex = (currentViewIndex == 0) ? views.count - 1 : currentViewIndex - 1
+        views[previousViewIndex].alpha = switchOffColorView
+        
+        switchTrafficLightButton.setTitle("Next", for: .normal)
+    }
+    
     func configureCircularView(_ view: UIView, color: UIColor) {
         view.backgroundColor = color
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -72,5 +91,6 @@ class ViewController: UIViewController {
         ])
         view.layer.cornerRadius = 64
         view.clipsToBounds = true
+        view.alpha = 0.3
     }
 }
