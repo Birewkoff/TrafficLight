@@ -46,6 +46,8 @@ class ViewController: UIViewController {
         
         // Button
         switchTrafficLightButton.setTitle("Start", for: .normal)
+        switchTrafficLightButton.layer.cornerRadius = 20
+        switchTrafficLightButton.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
         switchTrafficLightButton.backgroundColor = .blue
         switchTrafficLightButton.translatesAutoresizingMaskIntoConstraints = false
         switchTrafficLightButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
